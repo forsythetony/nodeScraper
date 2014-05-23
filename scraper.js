@@ -77,6 +77,11 @@ request(url, function (error, response, body) {
     parseData(listings, function(err,data) {
         if (!err) {
             console.log(data);
+            storeDataInDatabase(data, function(err, result) {
+            	if (err) {
+            		console.log("urrrr");
+            	}
+            });
         }
     });
 
