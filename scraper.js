@@ -81,6 +81,10 @@ request(url, function (error, response, body) {
             	if (err) {
             		console.log("urrrr");
             	}
+            	else
+            	{
+            		console.log("There was no error");
+            	}
             });
         }
     });
@@ -128,7 +132,16 @@ function storeDataInDatabase(data, callback)
 				db.collection(collectionName, {strict : true}, function(err, collection) {
 					if (!err) {
 						collection.insert(data, function (err, result) {
+							if (!err) {
+								callback(null, result);
 
+							}
+							else
+							{
+								error = "The items could not be inserted into the database";
+
+								callback(error, null);
+							}
 						});
 					}
 				});
