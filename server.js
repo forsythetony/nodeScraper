@@ -1,5 +1,5 @@
 var express = require('express'),
-	listings = require('./routes/listingManager')''
+	listings = require('./routes/listingManager');
 
 var app = express();
 
