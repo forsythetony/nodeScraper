@@ -3,7 +3,8 @@ var dbName = "craigslist",
 
 var mongo = require('mongodb'),
 	sprintf = require('sprintf'),
-	moment = require('moment');
+	moment = require('moment'),
+	sms = require('./aws/awsConnection');
 
 var Server = mongo.Server,
 	Db = mongo.Db,
@@ -134,7 +135,9 @@ function storeDataInDatabase(data, callback)
 						collection.insert(data, function (err, result) {
 							if (!err) {
 								callback(null, result);
+								sms.publishMessage("Data was successfully stored in the database!", function(err) {
 
+								});
 							}
 							else
 							{
