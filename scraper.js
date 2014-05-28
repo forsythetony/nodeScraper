@@ -100,7 +100,10 @@ request(url, function (error, response, body) {
 
 
 
-            var listing = {"datePosted" : dateString.toISOString(),
+            var listing = {"datePosted" : {
+                                "pureDate" : dateString.valueOf(),
+                                "prettyDate" : dateString.format("dddd, MMMM Do YYYY, h:mm:ss a")
+                            },
                             "title" : event[1],
                             "location" : event[2],
                             "link" : href,
