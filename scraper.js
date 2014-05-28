@@ -88,7 +88,17 @@ request(url, function (error, response, body) {
         
         if (event.length > 2) {
 
-            var listing = {"datePosted" : event[0],
+            //  Clean up date posted
+
+            var dateString = event[0];
+
+            dateString = dateString + moment().year();
+
+
+
+
+
+            var listing = {"datePosted" : dateString,
                             "title" : event[1],
                             "location" : event[2],
                             "link" : href,
