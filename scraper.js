@@ -92,13 +92,15 @@ request(url, function (error, response, body) {
 
             var dateString = event[0];
 
-            dateString = dateString + moment().year();
+            dateString = dateString + ", " + moment().year();
+
+            dateString = moment(dateString);
 
 
 
 
 
-            var listing = {"datePosted" : dateString,
+            var listing = {"datePosted" : dateString.toISOString(),
                             "title" : event[1],
                             "location" : event[2],
                             "link" : href,
