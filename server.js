@@ -9,6 +9,7 @@ app.configure(function() {
 });
 
 app.get('/listings', listings.getAllListings);
+// app.put('/times/:date', listings.getTimes);
 
 app.listen(3000);
 console.log("Listening on port 3000");

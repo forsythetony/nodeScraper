@@ -20,6 +20,31 @@ var cheerio = require('cheerio');
 var url = "http://columbiamo.craigslist.org/search/web?query=+";
 var baseUrl = "http://columbiamo.craigslist.org/web";
 
+db.open(function(err, db) {
+    if (!err) {
+        console.log(sprintf("Connected to the %s database.", dbName.toString()));
+        db.collection(collectionName, {strict : true}, function(err, collection) {
+            if (err) {
+                console.log(sprintf("The %s collection does not exist.", collectionName));
+                db.createCollection(collectionName, function(err, result) {
+                    if (err) {
+                        console.log("The collection could not be created.");
+
+                    }
+                    else
+                    {
+                        console.log(sprintf("The collection %s was successfully created!", collectionName));
+                    }
+                });
+            }
+        });
+    }
+    else
+    {
+        console.log("There was an error connecting to the database.");
+    }
+});
+
 /*
     request(url, (function(index) {return function(err, resp, body) {
         $ = cheerio.load(body);
@@ -66,7 +91,11 @@ request(url, function (error, response, body) {
             var listing = {"datePosted" : event[0],
                             "title" : event[1],
                             "location" : event[2],
-                            "link" : href
+                            "link" : href,
+                            "dateAdded" : {
+                                "pureDate" : moment().valueOf(),
+                                "prettyDate" : moment().format("dddd, MMMM Do YYYY, h:mm:ss a")
+                                }
                             };
 
             listings.push(listing);
@@ -104,6 +133,8 @@ function parseData(listings, callback)
         var title = ad["title"];
         title = title.toString();
 
+        var currentDate = moment();
+
         var patt = "/[Ll]aptop/";
 
         var matches = title.match(/PHP|ios|html/);
@@ -128,27 +159,26 @@ function storeDataInDatabase(data, callback)
 	}
 	else
 	{
-		db.open(function(err, db) {
+		
+		db.collection(collectionName, {strict : true}, function(err, collection) {
 			if (!err) {
-				db.collection(collectionName, {strict : true}, function(err, collection) {
+				collection.insert(data, function (err, result) {
 					if (!err) {
-						collection.insert(data, function (err, result) {
-							if (!err) {
-								callback(null, result);
-								sms.publishMessage("Data was successfully stored in the database!", function(err) {
+						callback(null, result);
+						//sms.publishMessage("Data was successfully stored in the database!", function(err) {
 
-								});
-							}
-							else
-							{
-								error = "The items could not be inserted into the database";
+						// });
+					}
+					else
+					{
+						error = "The items could not be inserted into the database";
 
-								callback(error, null);
-							}
-						});
+						callback(error, null);
 					}
 				});
 			}
 		});
+			
+		
 	}
 }
